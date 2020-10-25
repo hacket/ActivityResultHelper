@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.ArrayMap
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
@@ -27,10 +28,10 @@ const val TYPE_TAKE_VIDEO = 4
 class ActivityResultHelper private constructor() {
 
     private val mLauncherMap by lazy(LazyThreadSafetyMode.NONE) {
-        mutableMapOf<String, ActivityResultLauncher<*>>()
+        ArrayMap<String, ActivityResultLauncher<*>>()
     }
     private val mResultCallbacks by lazy(LazyThreadSafetyMode.NONE) {
-        mutableMapOf<String, ActivityCallback<*>>()
+        ArrayMap<String, ActivityCallback<*>>()
     }
 
     private lateinit var mApplication: Application
