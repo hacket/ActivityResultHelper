@@ -5,7 +5,7 @@ interface IActivityResultProvider {
         get() = this.hashCode()
 }
 
-interface IActivityResultProviderForStart : IActivityResultProvider
-interface IActivityResultProviderForPermissions : IActivityResultProvider
-interface IActivityResultProviderForTakePicture : IActivityResultProvider
-interface IActivityResultProviderForTakeVideo : IActivityResultProvider
+interface IStartActivityForResultProvider : IActivityResultProvider
+interface IRequestPermissionProvider : IActivityResultProvider
+interface ITakePictureProvider : IActivityResultProvider
+interface ITakeVideoProvider : IActivityResultProvider

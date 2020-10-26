@@ -91,19 +91,19 @@ class ActivityResultHelper private constructor() {
             return
         }
         var register = false
-        if (provider is IActivityResultProviderForStart) {
+        if (provider is IStartActivityForResultProvider) {
             registerResultLauncher(provider)
             register = true
         }
-        if (provider is IActivityResultProviderForPermissions) {
+        if (provider is IRequestPermissionProvider) {
             registerPermissionLauncher(provider)
             register = true
         }
-        if (provider is IActivityResultProviderForTakePicture) {
+        if (provider is ITakePictureProvider) {
             registerTakePictureLauncher(provider)
             register = true
         }
-        if (provider is IActivityResultProviderForTakeVideo) {
+        if (provider is ITakeVideoProvider) {
             registerTakeVideoLauncher(provider)
             register = true
         }
