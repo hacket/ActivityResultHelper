@@ -1,18 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".MainActivity">
 
-    <TextView
+    <Button
+            android:id="@+id/btn_request_one_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="Activity-请求单个权限Camera"
+            android:textAllCaps="false" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+            android:id="@+id/btn_request_more_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activity-请求多个权限"
+            android:textAllCaps="false" />
+
+    <Button
+            android:id="@+id/btn_request_other_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activity-请求任意一个权限"
+            android:textAllCaps="false" />
+
+    <Button
+            android:id="@+id/btn_start_activity_for_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activity-startActivityForResult"
+            android:textAllCaps="false" />
+    <Button
+            android:id="@+id/btn_take_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="take picture"
+            android:textAllCaps="false" />
+    <Button
+            android:id="@+id/btn_take_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="take video"
+            android:textAllCaps="false" />
+    <Button
+            android:id="@+id/btn_take_video_coroutine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="take video coroutine"
+            android:textAllCaps="false" />
+
+    <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+</LinearLayout>
