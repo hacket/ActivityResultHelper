@@ -6,19 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.ArrayMap
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import me.hacket.library.contract.TakeVideo2Contract
 
 const val TYPE_START_ACT_FOR_RESULT = 1
 const val TYPE_PERMISSION = 2
@@ -265,7 +263,7 @@ class ActivityResultHelper private constructor() {
         when (provider) {
             is ComponentActivity -> {
                 val launcher = provider.registerForActivityResult(
-                    TakeVideo2(),
+                    TakeVideo2Contract(),
                     ActivityResultCallback<Uri> { uri ->
                         (this@ActivityResultHelper.mResultCallbacks[key] as? ActivityCallback<Uri>)
                             ?.onSuccess(uri)
@@ -274,7 +272,7 @@ class ActivityResultHelper private constructor() {
             }
             is Fragment -> {
                 val launcher = provider.registerForActivityResult(
-                    TakeVideo2(),
+                    TakeVideo2Contract(),
                     ActivityResultCallback<Uri> { uri ->
                         (this@ActivityResultHelper.mResultCallbacks[key] as? ActivityCallback<Uri>)
                             ?.onSuccess(uri)
@@ -288,7 +286,7 @@ class ActivityResultHelper private constructor() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun launchActForResult(
+    fun startActivityForResult(
         provider: Any,
         input: Intent,
         callback: ActivityCallback<Intent>? = null
@@ -306,7 +304,7 @@ class ActivityResultHelper private constructor() {
      * 请求多个权限
      */
     @Suppress("UNCHECKED_CAST")
-    fun launchPermissions(
+    fun requestPermissions(
         provider: Any,
         input: Array<String>,
         callback: ActivityCallback<Map<String, Boolean>>? = null
@@ -381,65 +379,4 @@ class ActivityResultHelper private constructor() {
         }
     }
 
-}
-
-
-abstract class EmptyActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-    }
-
-    override fun onActivityStarted(activity: Activity) {
-    }
-
-    override fun onActivityResumed(activity: Activity) {
-    }
-
-    override fun onActivityPaused(activity: Activity) {
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-    }
-
-    override fun onActivityDestroyed(activity: Activity) {
-    }
-}
-
-abstract class EmptyFragmentLifecycleCallbacks : FragmentManager.FragmentLifecycleCallbacks()
-
-interface ActivityCallback<T> {
-    fun onSuccess(result: T)
-}
-
-interface IActivityResultProviderForStart : IActivityResultProvider
-interface IActivityResultProviderForPermissions : IActivityResultProvider
-interface IActivityResultProviderForTakePicture : IActivityResultProvider
-interface IActivityResultProviderForTakeVideo : IActivityResultProvider
-
-// 未用ActivityResultContracts.TakeVideo是因为录像成功，result返回的bitmap也可能为null，https://stackoverflow.com/questions/65704408/activityresultcontracts-takevideo-is-returning-null-after-recording-the-video
-class TakeVideo2 : ActivityResultContract<Uri, Uri>() {
-    @CallSuper
-    override fun createIntent(context: Context, input: Uri): Intent {
-        return Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-            .putExtra(MediaStore.EXTRA_OUTPUT, input)
-    }
-
-    override fun getSynchronousResult(context: Context, input: Uri): SynchronousResult<Uri>? {
-        return null
-    }
-
-    override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-        if (intent == null || resultCode != Activity.RESULT_OK) return Uri.EMPTY
-
-        if (resultCode == Activity.RESULT_OK) {
-            intent.data?.let { uri ->
-                // Do something with the video URI
-                return uri
-            }
-        }
-        // intent.getParcelableExtra("data")
-        return Uri.EMPTY
-    }
 }

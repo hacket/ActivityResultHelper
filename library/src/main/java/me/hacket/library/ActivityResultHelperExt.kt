@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-// <editor-fold defaultstate="collapsed" desc="launchActForResult">
+// <editor-fold defaultstate="collapsed" desc="startActivityForResult">
 
 @JvmOverloads
-fun ActivityResultHelper.launchActForResult(
+fun ActivityResultHelper.startActivityForResult(
     provider: IActivityResultProvider,
     clazz: Class<out Activity>,
     extra: Bundle? = null,
@@ -27,11 +27,11 @@ fun ActivityResultHelper.launchActForResult(
     } else null
     val intent = Intent(getContext(), clazz)
     extra?.let { intent.putExtras(it) }
-    this.launchActForResult(provider, intent, callback)
+    this.startActivityForResult(provider, intent, callback)
 }
 
 @JvmOverloads
-fun ActivityResultHelper.launchActForResult(
+fun ActivityResultHelper.startActivityForResult(
     provider: IActivityResultProvider,
     input: Intent,
     listener: ((Intent) -> Unit)? = null
@@ -41,27 +41,27 @@ fun ActivityResultHelper.launchActForResult(
             listener.invoke(result)
         }
     } else null
-    this.launchActForResult(provider, input, callback)
+    this.startActivityForResult(provider, input, callback)
 }
 
 @JvmOverloads
-fun Activity.launchActForResult(
+fun Activity.startActivityForResultExt(
     clazz: Class<out Activity>,
     extra: Bundle? = null,
     listener: ((Intent) -> Unit)
 ) {
     val intent = Intent(applicationContext, clazz)
     extra?.let { intent.putExtras(it) }
-    launchActForResult(intent, listener)
+    startActivityForResultExt(intent, listener)
 }
 
 @JvmOverloads
-fun Activity.launchActForResult(
+fun Activity.startActivityForResultExt(
     input: Intent,
     listener: ((Intent) -> Unit)? = null
 ) {
     if (this is IActivityResultProvider) {
-        ActivityResultHelper.getInstance().launchActForResult(this, input, listener)
+        ActivityResultHelper.getInstance().startActivityForResult(this, input, listener)
     } else {
         checkActivityResultProvider(this)
 //        val callback = if (listener != null) object : ActivityCallback<Intent> {
@@ -69,28 +69,28 @@ fun Activity.launchActForResult(
 //                listener.invoke(result)
 //            }
 //        } else null
-//        ActivityResultHelper.getInstance().launchActForResult(this, input, callback)
+//        ActivityResultHelper.getInstance().startActivityForResult(this, input, callback)
     }
 }
 
 @JvmOverloads
-fun Fragment.launchActForResult(
+fun Fragment.startActivityForResultExt(
     clazz: Class<out Activity>,
     extra: Bundle? = null,
     listener: ((Intent) -> Unit)? = null
 ) {
     val intent = Intent(context, clazz)
     extra?.let { intent.putExtras(it) }
-    launchActForResult(intent, listener)
+    startActivityForResultExt(intent, listener)
 }
 
 @JvmOverloads
-fun Fragment.launchActForResult(
+fun Fragment.startActivityForResultExt(
     input: Intent,
     listener: ((Intent) -> Unit)? = null
 ) {
     if (this is IActivityResultProvider) {
-        ActivityResultHelper.getInstance().launchActForResult(this, input, listener)
+        ActivityResultHelper.getInstance().startActivityForResult(this, input, listener)
     } else {
         checkActivityResultProvider(this)
 //        val callback = if (listener != null) object : ActivityCallback<Intent> {
@@ -98,19 +98,19 @@ fun Fragment.launchActForResult(
 //                listener.invoke(result)
 //            }
 //        } else null
-//        ActivityResultHelper.getInstance().launchActForResult(this, input, callback)
+//        ActivityResultHelper.getInstance().startActivityForResult(this, input, callback)
     }
 }
 
 // </editor-fold>
 
 
-// <editor-fold defaultstate="collapsed" desc="launchPermissions">
+// <editor-fold defaultstate="collapsed" desc="requestPermission">
 /**
  * 请求单个权限
  */
 @JvmOverloads
-fun ActivityResultHelper.launchPermission(
+fun ActivityResultHelper.requestPermission(
     provider: IActivityResultProvider,
     permission: String,
     listener: ((Pair<String, Boolean>) -> Unit)? = null
@@ -121,15 +121,15 @@ fun ActivityResultHelper.launchPermission(
             listener.invoke(Pair(permission, value))
         }
     } else null
-    launchPermissions(provider, arrayOf(permission), callback)
+    requestPermissions(provider, arrayOf(permission), callback)
 }
 
-suspend fun ActivityResultHelper.launchPermissionSuspend(
+suspend fun ActivityResultHelper.requestPermissionSuspend(
     provider: IActivityResultProvider,
     permission: String
 ): Boolean {
     return suspendCancellableCoroutine { c ->
-        launchPermission(provider, permission) {
+        requestPermission(provider, permission) {
             c.resume(it.second)
         }
     }
@@ -139,7 +139,7 @@ suspend fun ActivityResultHelper.launchPermissionSuspend(
  * 请求多个权限
  */
 @JvmOverloads
-fun ActivityResultHelper.launchPermissions(
+fun ActivityResultHelper.requestPermissions(
     provider: IActivityResultProvider,
     permission: Array<String>,
     listener: ((Map<String, Boolean>) -> Unit)? = null
@@ -149,22 +149,22 @@ fun ActivityResultHelper.launchPermissions(
             listener.invoke(result)
         }
     } else null
-    launchPermissions(provider, permission, callback)
+    requestPermissions(provider, permission, callback)
 }
 
-suspend fun ActivityResultHelper.launchPermissionsSuspend(
+suspend fun ActivityResultHelper.requestPermissionsSuspend(
     provider: IActivityResultProvider,
     permission: Array<String>
 ): Map<String, Boolean> {
     return suspendCancellableCoroutine { c ->
-        launchPermissions(provider, permission) {
+        requestPermissions(provider, permission) {
             c.resume(it)
         }
     }
 }
 
 @JvmOverloads
-fun Activity.launchPermission(
+fun Activity.requestPermission(
     permission: String,
     listener: ((Pair<String, Boolean>) -> Unit)? = null
 ) {
@@ -175,19 +175,19 @@ fun Activity.launchPermission(
             listener.invoke(Pair(permission, value))
         }
     } else null
-    ActivityResultHelper.getInstance().launchPermissions(this, arrayOf(permission), callback)
+    ActivityResultHelper.getInstance().requestPermissions(this, arrayOf(permission), callback)
 }
 
-suspend fun Activity.launchPermissionSuspend(permission: String): Boolean {
+suspend fun Activity.requestPermissionSuspend(permission: String): Boolean {
     return suspendCancellableCoroutine { continuation ->
-        launchPermission(permission) {
+        requestPermission(permission) {
             continuation.resume(it.second)
         }
     }
 }
 
 @JvmOverloads
-fun Activity.launchPermissions(
+fun Activity.requestPermissions(
     permissions: Array<String>,
     listener: ((Map<String, Boolean>) -> Unit)? = null
 ) {
@@ -197,19 +197,19 @@ fun Activity.launchPermissions(
             listener.invoke(result)
         }
     } else null
-    ActivityResultHelper.getInstance().launchPermissions(this, permissions, callback)
+    ActivityResultHelper.getInstance().requestPermissions(this, permissions, callback)
 }
 
-suspend fun Activity.launchPermissionsSuspend(permissions: Array<String>): Map<String, Boolean> {
+suspend fun Activity.requestPermissionsSuspend(permissions: Array<String>): Map<String, Boolean> {
     return suspendCancellableCoroutine { continuation ->
-        launchPermissions(permissions) {
+        requestPermissions(permissions) {
             continuation.resume(it)
         }
     }
 }
 
 @JvmOverloads
-fun Fragment.launchPermission(
+fun Fragment.requestPermission(
     permission: String,
     listener: ((Pair<String, Boolean>) -> Unit)? = null
 ) {
@@ -220,19 +220,19 @@ fun Fragment.launchPermission(
             listener.invoke(Pair(permission, value))
         }
     } else null
-    ActivityResultHelper.getInstance().launchPermissions(this, arrayOf(permission), callback)
+    ActivityResultHelper.getInstance().requestPermissions(this, arrayOf(permission), callback)
 }
 
-suspend fun Fragment.launchPermissionSuspend(permission: String): Boolean {
+suspend fun Fragment.requestPermissionSuspend(permission: String): Boolean {
     return suspendCancellableCoroutine { continuation ->
-        launchPermission(permission) {
+        requestPermission(permission) {
             continuation.resume(it.second)
         }
     }
 }
 
 @JvmOverloads
-fun Fragment.launchPermissions(
+fun Fragment.requestPermissions(
     permissions: Array<String>,
     listener: ((Map<String, Boolean>) -> Unit)? = null
 ) {
@@ -242,50 +242,50 @@ fun Fragment.launchPermissions(
             listener.invoke(result)
         }
     } else null
-    ActivityResultHelper.getInstance().launchPermissions(this, permissions, callback)
+    ActivityResultHelper.getInstance().requestPermissions(this, permissions, callback)
 }
 
-suspend fun Fragment.launchPermissionsSuspend(permissions: Array<String>): Map<String, Boolean> {
+suspend fun Fragment.requestPermissionsSuspend(permissions: Array<String>): Map<String, Boolean> {
     return suspendCancellableCoroutine { continuation ->
-        launchPermissions(permissions) {
+        requestPermissions(permissions) {
             continuation.resume(it)
         }
     }
 }
 
 @JvmOverloads
-fun Activity.cameraPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.CAMERA, listener)
+fun Activity.requestCameraPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.CAMERA, listener)
 }
 
 @JvmOverloads
-fun Fragment.cameraPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.CAMERA, listener)
+fun Fragment.requestCameraPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.CAMERA, listener)
 }
 
 @JvmOverloads
-fun Activity.writeStoragePermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, listener)
+fun Activity.requestWriteStoragePermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, listener)
 }
 
 @JvmOverloads
-fun Fragment.writeStoragePermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, listener)
+fun Fragment.requestWriteStoragePermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, listener)
 }
 
 @JvmOverloads
-fun Activity.recordAudioPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.RECORD_AUDIO, listener)
+fun Activity.requestRecordAudioPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.RECORD_AUDIO, listener)
 }
 
 @JvmOverloads
-fun Fragment.recordAudioPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
-    launchPermission(Manifest.permission.RECORD_AUDIO, listener)
+fun Fragment.requestRecordAudioPermission(listener: ((Pair<String, Boolean>) -> Unit)? = null) {
+    requestPermission(Manifest.permission.RECORD_AUDIO, listener)
 }
 
 @JvmOverloads
-fun Activity.locationPermissions(listener: ((Map<String, Boolean>) -> Unit)? = null) {
-    launchPermissions(
+fun Activity.requestLocationPermissions(listener: ((Map<String, Boolean>) -> Unit)? = null) {
+    requestPermissions(
         arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -294,8 +294,8 @@ fun Activity.locationPermissions(listener: ((Map<String, Boolean>) -> Unit)? = n
 }
 
 @JvmOverloads
-fun Fragment.locationPermissions(listener: ((Map<String, Boolean>) -> Unit)? = null) {
-    launchPermissions(
+fun Fragment.requestLocationPermissions(listener: ((Map<String, Boolean>) -> Unit)? = null) {
+    requestPermissions(
         arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
