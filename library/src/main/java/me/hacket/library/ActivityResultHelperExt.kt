@@ -396,7 +396,7 @@ fun Fragment.takeVideo(
 
 private fun checkActivityResultProvider(provider: Any) {
     if (provider !is IActivityResultProvider) {
-        throw IllegalArgumentException("${provider.javaClass.simpleName} 未实现IActivityResultProvider")
+        throw IllegalArgumentException("${provider.javaClass.simpleName} should implement IActivityResultProvider or sub interface.")
     }
 }
 // </editor-fold>
