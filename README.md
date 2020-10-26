@@ -1,6 +1,6 @@
 # ActivityResultHelper
 
-一行代码实现权限请求、startActivityForResult、调用相机拍照及调用相机录像等，消除onActivityResult()、onRequestPermissionsResult()回调导致的代码分散的问题
+一行代码实现权限请求、startActivityForResult、调用相机拍照及调用相机录像等，消除onActivityResult()、onRequestPermissionsResult()回调导致的代码分散的问题；支持协程
 
 ## request permissions 请求权限
 1. 请求单个权限
@@ -27,6 +27,16 @@ requestPermissions(
 ```kotlin
 // AppCompatActivity or Fragment
 requestCameraPermission {
+    // ...
+}
+```
+
+4. 对协程的支持
+```kotlin
+lifecycleScope.launch {
+    if (!requestPermissionSuspend(Manifest.permission.CAMERA)) {
+        return@launch
+    }
     // ...
 }
 ```
